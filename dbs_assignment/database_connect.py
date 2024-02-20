@@ -1,4 +1,5 @@
 import asyncpg
+
 from dotenv import load_dotenv
 
 from dbs_assignment.config import settings
