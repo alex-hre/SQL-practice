@@ -63,3 +63,5 @@ SELECT posts.id, TO_CHAR(posts.creationdate AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"
 	ORDER BY posts.creationdate DESC
 	LIMIT $1
 """
+
+
