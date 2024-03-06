@@ -1,14 +1,10 @@
 from fastapi import APIRouter, Query
 
-#####
-from flask import Flask
-
 from dbs_assignment.SQL_Z2 import GET_POST_USERS_QUERY, GET_FRIENDS_USERS_QUERY, GET_PERCENTAGE_TAGS_QUERY, \
     GET_POST_DURATION_WITH_LIMIT_QUERY, GET_POST_ON_KEYWORD_WITH_LIMIT_QUERY
 from dbs_assignment.database_connect import get_postgres_version, execute_query
 
-##app = Flask(__name__)
-####
+#####
 
 router = APIRouter()
 
