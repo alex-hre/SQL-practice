@@ -58,7 +58,7 @@ GET_POST_ON_KEYWORD_WITH_LIMIT_QUERY = """
 SELECT posts.id, TO_CHAR(posts.creationdate AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS creationdate, posts.viewcount, TO_CHAR(posts.lasteditdate AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS lasteditdate, TO_CHAR(posts.lastactivitydate AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS lastactivitydate, posts.title, posts.body, posts.answercount, TO_CHAR(posts.closeddate AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS closeddate, STRING_AGG(tags.tagname, ', ') AS tags_list
 	FROM posts
 	JOIN post_tags ON posts.id = post_tags.post_id JOIN tags ON post_tags.tag_id = tags.id
-	WHERE (posts.body ILIKE '%' || $2 || '%' OR posts.title ILIKE '%' || $2 || '%')
+	WHERE (posts.body ILIKE '%' || unaccent($2) || '%' OR posts.title ILIKE '%' || unaccent($2) || '%')
 	GROUP BY posts.id, posts.body, posts.title, posts.answercount
 	ORDER BY posts.creationdate DESC
 	LIMIT $1

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Query
 
 from dbs_assignment.SQL_Z2 import GET_POST_USERS_QUERY, GET_FRIENDS_USERS_QUERY, GET_PERCENTAGE_TAGS_QUERY, \
@@ -52,7 +54,7 @@ async def get_post_users(post_id: int):
 
     return response_data
 
-@router.get('/v2/friends/{users_id}/users')     ### /v2/friends/1076348/users
+@router.get('/v2/users/{users_id}/friends')     ### /v2/users/1076348/friends
 async def get_friends_users(users_id: int):
     users = await execute_query(GET_FRIENDS_USERS_QUERY, users_id)
 
@@ -115,9 +117,9 @@ async def get_percentage_tags(tagname: str):
 
 
 
-
+"""
 @router.get('/v2/posts/') ### /v2/posts/?duration=5&limit=2
-async def get_posts_on_duration(duration: int = Query(...), limit: int = Query(...)):
+async def get_posts_on_duration(duration: int, limit: int):
     posts = await execute_query(GET_POST_DURATION_WITH_LIMIT_QUERY, duration, limit)
 
     formatted_posts = []
@@ -144,7 +146,7 @@ async def get_posts_on_duration(duration: int = Query(...), limit: int = Query(.
 
 
 @router.get('/v2/posts') ### /v2/posts?limit=1&query=linux
-async def get_posts_on_keyword(limit: int = Query(...), query: str = Query(...)):
+async def get_posts_on_keyword(limit: int, query: str):
     posts = await execute_query(GET_POST_ON_KEYWORD_WITH_LIMIT_QUERY,limit, query)
 
     formatted_posts = []
@@ -167,3 +169,48 @@ async def get_posts_on_keyword(limit: int = Query(...), query: str = Query(...))
 
     return response_data
 
+"""
+
+@router.get('/v2/posts')
+async def get_posts(limit: int, duration: Optional[int] = None, query: Optional[str] = None):
+    if duration is not None:
+        posts = await execute_query(GET_POST_DURATION_WITH_LIMIT_QUERY, duration, limit)
+
+        formatted_posts = []
+        for post in posts:
+
+            formatted_post = {
+                "id": post["id"],
+                "creationdate": str(post["creationdate"]),
+                "viewcount": post["viewcount"],
+                "lasteditdate": str(post["lasteditdate"]),
+                "lastactivitydate": str(post["lastactivitydate"]),
+                "title": str(post["title"]),
+                "closeddate": str(post["closeddate"]),
+                "duration": post["duration"]
+            }
+            formatted_posts.append(formatted_post)
+        response_data = {"items": formatted_posts}
+        return response_data
+    elif query is not None:
+
+        posts = await execute_query(GET_POST_ON_KEYWORD_WITH_LIMIT_QUERY, limit, query)
+
+        formatted_posts = []
+        for post in posts:
+
+            formatted_post = {
+                "id": post["id"],
+                "creationdate": str(post["creationdate"]),
+                "viewcount": post["viewcount"],
+                "lasteditdate": str(post["lasteditdate"]),
+                "lastactivitydate": str(post["lastactivitydate"]),
+                "title": str(post["title"]),
+                "body": str(post["body"]),
+                "answercount": post["answercount"],
+                "closeddate": str(post["closeddate"]),
+                "tags": str(post["tags_list"]),
+            }
+            formatted_posts.append(formatted_post)
+        response_data = {"items": formatted_posts}
+        return response_data
