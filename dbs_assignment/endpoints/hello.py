@@ -6,7 +6,6 @@ from dbs_assignment.SQL_Z2 import GET_POST_USERS_QUERY, GET_FRIENDS_USERS_QUERY,
     GET_POST_DURATION_WITH_LIMIT_QUERY, GET_POST_ON_KEYWORD_WITH_LIMIT_QUERY
 from dbs_assignment.database_connect import get_postgres_version, execute_query
 
-#####
 
 router = APIRouter()
 
@@ -214,3 +213,7 @@ async def get_posts(limit: int, duration: Optional[int] = None, query: Optional[
             formatted_posts.append(formatted_post)
         response_data = {"items": formatted_posts}
         return response_data
+
+
+
+
