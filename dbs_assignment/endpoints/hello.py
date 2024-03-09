@@ -208,7 +208,7 @@ async def get_posts(limit: int, duration: Optional[int] = None, query: Optional[
                 "body": str(post["body"]),
                 "answercount": post["answercount"],
                 "closeddate": str(post["closeddate"]),
-                "tags": str(post["tags_list"]),
+                "tags": [str(post["tags_list"])]
             }
             formatted_posts.append(formatted_post)
         response_data = {"items": formatted_posts}
