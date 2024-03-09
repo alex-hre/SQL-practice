@@ -59,7 +59,7 @@ SELECT posts.id, TO_CHAR(posts.creationdate AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"
 	FROM posts
 	JOIN post_tags ON posts.id = post_tags.post_id JOIN tags ON post_tags.tag_id = tags.id
 	WHERE (posts.body ILIKE '%' || unaccent($2) || '%' OR posts.title ILIKE '%' || unaccent($2) || '%')
-	GROUP BY posts.id, posts.creationdate, posts.viewcount, posts.lasteditdate, posts.title, posts.body, posts.answercount, posts.closeddate
+	GROUP BY posts.id, posts.creationdate, posts.viewcount, posts.lasteditdate, posts.title, posts.body, posts.answercount, posts.closeddate, posts.lastactivitydate
 	ORDER BY posts.creationdate DESC
 	LIMIT $1
 """
