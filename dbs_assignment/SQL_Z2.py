@@ -17,10 +17,10 @@ GET_FRIENDS_USERS_QUERY = """
            TO_CHAR(users.lastaccessdate AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS lastaccessdate,
            users.websiteurl, users.location, users.aboutme, users.views, users.upvotes, users.downvotes, users.profileimageurl, users.age, users.accountid
     FROM
-    (SELECT posts.owneruserid AS user_id
+    (SELECT comments.userid AS user_id
     FROM posts
     JOIN comments ON posts.id = comments.postid
-    WHERE posts.owneruserid = $1
+    WHERE comments.userid = $1
 
     UNION
 
