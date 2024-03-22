@@ -219,7 +219,7 @@ async def get_posts(limit: int, duration: Optional[int] = None, query: Optional[
 ############################### Z3
 
 
-@router.get('/v3/users/{user_id}/badge history')     ### /v3/users/120/badge history
+@router.get('/v3/users/{user_id}/badge_history')     ### /v3/users/120/badge_history
 async def get_posts_and_badges(user_id: int):
     posts_and_badges = await execute_query(GET_BADGE_POSTS_HISTORY_WITH_LIMIT_QUERY, user_id)
 
