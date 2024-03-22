@@ -92,10 +92,11 @@ FROM(
 	FROM badges
 	JOIN users ON badges.userid = users.id
 	WHERE users.id = $1
-	ORDER BY created_at
+    ORDER BY type, title
 ) as final
 ) as finality
 WHERE (previous_type = 'post' AND type = 'badge') OR (next_type = 'badge' AND type = 'post')
+ORDER BY created_at
 """
 
 
@@ -117,11 +118,11 @@ FROM(
 
 
 GET_K_COMMENT_TO_POSTS_BY_TAGS_WITH_LIMIT_QUERY = """
-    SELECT comments.id, users.displayname, base.body, comments.text, comments.score, ROW_NUMBER() OVER () AS position  -- TO_CHAR(comments.creationdate AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS creationdate,
+    SELECT comments.id, users.displayname, base.body, comments.text, comments.score, ARRAY_POSITION(base.comment_ids, comments.id) AS position
     FROM comments
-    JOIN users ON comments.userid = users.id
+    LEFT JOIN users ON comments.userid = users.id
     JOIN(
-        SELECT posts.id as post_id, posts.body, ARRAY_AGG(comments.id ORDER BY comments.creationdate) AS comment_ids
+        SELECT posts.id as post_id, posts.body,  ARRAY_AGG(comments.id ORDER BY comments.creationdate) AS comment_ids
         FROM tags
             JOIN post_tags ON tags.id = post_tags.tag_id
             JOIN posts ON post_tags.post_id = posts.id
