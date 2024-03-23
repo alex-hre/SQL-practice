@@ -237,7 +237,7 @@ async def get_posts_and_badges(user_id: int):
         formatted_posts_and_badges.append(post_and_badge)
 
 
-    response_data = {"result": formatted_posts_and_badges}
+    response_data = {"items": formatted_posts_and_badges}
 
     return response_data
 
@@ -261,7 +261,7 @@ async def get_comments_more_than_count(tag: str, count: int):
         }
         formatted_comments_more_than_count.append(comment)
 
-    response_data = {"result": formatted_comments_more_than_count}
+    response_data = {"items": formatted_comments_more_than_count}
 
     return response_data
 
@@ -269,7 +269,7 @@ async def get_comments_more_than_count(tag: str, count: int):
 
 
 @router.get('/v3/tags/{tagname}/comments/{position}')   ### /v3/tags/linux/comments/2?limit=1
-async def get_comments(tagname: str, position: int, limit: int ):
+async def get_comments(tagname: str, position: int, limit: int):
 
     comments = await execute_query(GET_K_COMMENT_TO_POSTS_BY_TAGS_WITH_LIMIT_QUERY, tagname, position, limit)
 

@@ -102,8 +102,14 @@ ORDER BY created_at
 
 
 GET_COMMENTS_BY_TAGS_MORE_THAN_COUNT_QUERY = """
-SELECT post_id, title, displayname, text, TO_CHAR(created_at AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS created_at, (created_at - previous_time) AS diff, AVG(created_at - previous_time) OVER (PARTITION BY post_id ORDER BY created_at ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS avg
-FROM(
+SELECT main.post_id,
+    main.title,
+    main.displayname,
+    main.text,
+    TO_CHAR(main.created_at AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS created_at,
+    (main.created_at - main.previous_time) AS diff,
+    AVG(main.created_at - main.previous_time) OVER (PARTITION BY main.post_id ORDER BY main.created_at ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS avg
+    FROM(
 	SELECT users.displayname AS displayname, posts.id AS post_id, posts.title AS title, comments.text AS text, comments.creationdate AS created_at, posts.creationdate, LAG(comments.creationdate, 1, posts.creationdate) OVER (PARTITION BY posts.id ORDER BY comments.creationdate) AS previous_time
 	FROM post_tags
 		JOIN posts ON post_tags.post_id = posts.id
@@ -113,7 +119,7 @@ FROM(
 
 	WHERE tags.tagname = $1 AND posts.commentcount > $2
 	ORDER BY comments.creationdate
-) AS main
+) main;
 """
 
 
@@ -122,7 +128,7 @@ GET_K_COMMENT_TO_POSTS_BY_TAGS_WITH_LIMIT_QUERY = """
     FROM comments
     LEFT JOIN users ON comments.userid = users.id
     JOIN(
-        SELECT posts.id as post_id, posts.body,  ARRAY_AGG(comments.id ORDER BY comments.creationdate) AS comment_ids
+        SELECT posts.id as post_id, posts.body, posts.creationdate, ARRAY_AGG(comments.id ORDER BY comments.creationdate) AS comment_ids
         FROM tags
             JOIN post_tags ON tags.id = post_tags.tag_id
             JOIN posts ON post_tags.post_id = posts.id
@@ -132,7 +138,7 @@ GET_K_COMMENT_TO_POSTS_BY_TAGS_WITH_LIMIT_QUERY = """
         HAVING COUNT(*) >= $2
         ORDER BY posts.creationdate
         LIMIT $3
-    ) base ON comments.id = base.comment_ids[$2]
+    ) base ON comments.id = base.comment_ids[$2];
 """
 
 
