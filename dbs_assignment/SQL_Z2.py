@@ -106,11 +106,12 @@ SELECT main.post_id,
     main.title,
     main.displayname,
     main.text,
+    TO_CHAR(main.post_created_at AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS post_created_at,
     TO_CHAR(main.created_at AT TIME ZONE 'UTC+0', 'YYYY-MM-DD"T"HH24:MI:SS.US+00:00') AS created_at,
     (main.created_at - main.previous_time) AS diff,
     AVG(main.created_at - main.previous_time) OVER (PARTITION BY main.post_id ORDER BY main.created_at ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS avg
     FROM(
-	SELECT users.displayname AS displayname, posts.id AS post_id, posts.title AS title, comments.text AS text, comments.creationdate AS created_at, posts.creationdate, LAG(comments.creationdate, 1, posts.creationdate) OVER (PARTITION BY posts.id ORDER BY comments.creationdate) AS previous_time
+	SELECT users.displayname AS displayname, posts.id AS post_id, posts.title AS title, comments.text AS text, comments.creationdate AS created_at, posts.creationdate AS post_created_at, LAG(comments.creationdate, 1, posts.creationdate) OVER (PARTITION BY posts.id ORDER BY comments.creationdate) AS previous_time
 	FROM post_tags
 		JOIN posts ON post_tags.post_id = posts.id
 		JOIN tags ON tags.id = post_tags.tag_id

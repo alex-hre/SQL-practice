@@ -255,6 +255,7 @@ async def get_comments_more_than_count(tag: str, count: int):
             "title": str(comment["title"]),
             "displayname": str(comment["displayname"]),
             "text": str(comment["text"]),
+            "post_created_at": str(comment["post_created_at"]),
             "created_at": str(comment["created_at"]),
             "diff": str(comment["diff"]),
             "avg": str(comment["avg"])
